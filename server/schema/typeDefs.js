@@ -29,33 +29,17 @@ type Auth{
     user:User
 }
 
-input BookData{
-    _id: ID!
-    bookId:String!
-    authors:String!
-    title:String!
-    description:String!
-    image:String
-    link:String
-}
 
 type Query{
     me:User
 }
 
 type Mutation{
-    login(username:String!, email:String!, password:String! ):Auth
+    login(email:String!, password:String! ):Auth
     addUser(username:String!, email:String!, password:String!):Auth
-    saveBook(bookData:BookData):BookUpdateResponse!
-    deleteBook(bookId:String!):BookUpdateResponse!
-    
+   
 } 
 
-type BookUpdateResponse {
-    success:Boolean!
-    message:String
-    user:User
-}
 `;
 
 module.exports = typeDefs;

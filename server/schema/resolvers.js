@@ -1,3 +1,4 @@
+const { AuthenticationError } = require('apollo-server-express');
 const { User } = require('../models');
 
 // import sign token function from auth
@@ -5,72 +6,39 @@ const { signToken } = require('../utils/auth');
 
 const resolvers = {
     Query: {
-        me: async (_,args,context,info) => {
-            //Need to get current ID
-            //Call JWT to get token to get ID 
-            //console.log('me', args, context,info);
-            console.log('Context', context.user);
-           
-            const user = await User.findOne({})
-            return user;
+        me: async (parent, context) => {
+         //   console.log('here', context.user)
+            if (context.user) {
+                return User.findOne({ _id: context.user._id })
+            }
+            throw new AuthenticationError('You need to be logged in!');
         },
     },
+
     Mutation: {
-        login: async (_, { username, email, password }) => {
-            let user;
-            user = await User.findOne({email, password});
-
-            if(!user){
-                user = await User.create({
-                    username,
-                    email,
-                    password,
-                })
-            }
-            
-            if (user) {
-                const token = signToken(user);
-                return {token,user};
-            }
-            throw new Error("Cannot create or find user, please fix this bug");
+        addUser: async (parent, { username, email, password }) => {
+            const user = await User.create({ username, email, password });
+            const token = signToken(user);
+            console.log('token here is ', token, user);
+            return { token, user };
         },
+        login: async (parent, { email, password }) => {
+            const user = await User.findOne({ email });
 
-        addUser: async (_, { username, email, password }) => {
-            const user = await User.Create({ username, email, password });
-            if (user) {
-                const token = signToken(user);
-                return {token,user};
+            if (!user) {
+                throw new AuthenticationError('No user found with this email address');
             }
-        },
 
-        saveBook: async (_, { bookData }) => {
-            //Do we need to get the UserID so that we pass in just UserId and Books
-            //Do we add the input data to User.savedBooks
+            const correctPw = await user.isCorrectPassword(password);
 
-            const result = await User.findOneAndUpdate({ bookData });
-            return {
-                success: true,
-                message: 'Help',
-                user: user,
-            };
-        },
-        deleteBook: async (_, { id }) => {
+            if (!correctPw) {
+                throw new AuthenticationError('Incorrect credentials');
+            }
 
-            //Do we need to get the UserID and pass in UserID and id (of book)
-            const result = await User.findOneAndUpdate({ _id: id })
+            const token = signToken(user);
 
-            if (!result)
-                return {
-                    success: false,
-                    message: 'failed to delete book',
-                };
-            return {
-                success: true,
-                message: 'book deleted',
-                book: [book],
-            };
+            return { token, user };
         },
     }
 }
-
 module.exports = resolvers;
