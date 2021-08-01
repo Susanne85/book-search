@@ -7,7 +7,6 @@ const { signToken } = require('../utils/auth');
 const resolvers = {
     Query: {
         me: async (parent, context) => {
-         //   console.log('here', context.user)
             if (context.user) {
                 return User.findOne({ _id: context.user._id })
             }
@@ -17,10 +16,17 @@ const resolvers = {
 
     Mutation: {
         addUser: async (parent, { username, email, password }) => {
-            const user = await User.create({ username, email, password });
-            const token = signToken(user);
-            console.log('token here is ', token, user);
-            return { token, user };
+            let user;
+            user = await User.findOne({ email, password });
+
+            if (!user) {
+                const user = await User.create({ username, email, password });
+                if (user) {
+                    const token = signToken(user);
+                    return { token, user };
+                }
+                throw new AuthenticationError('User could not be created, try again later!');
+            }
         },
         login: async (parent, { email, password }) => {
             const user = await User.findOne({ email });
@@ -39,6 +45,38 @@ const resolvers = {
 
             return { token, user };
         },
+        removeBook: async (_, { id }) => {
+
+            const result = await User.findOneAndUpdate({ _id: id })
+
+            if (!result)
+                return {
+                    success: false,
+                    message: 'failed to delete book',
+                };
+            return {
+                success: true,
+                message: 'book deleted',
+                book: [book],
+            }
+        },
+        saveBook: async (_, { id }) => {
+
+            const result = await User.findOne({ _id: id })
+            console.log('save Book', result);
+
+            if (!result)
+                return {
+                    success: false,
+                    message: 'failed to delete book',
+                };
+            return {
+                success: true,
+                message: 'book deleted',
+                book: [book],
+            };
+        }
+
     }
 }
 module.exports = resolvers;
