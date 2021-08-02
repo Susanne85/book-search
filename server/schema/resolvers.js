@@ -23,12 +23,14 @@ const resolvers = {
                 const user = await User.create({ username, email, password });
                 if (user) {
                     const token = signToken(user);
+                    console.log('User credentials', token, user);
                     return { token, user };
                 }
                 throw new AuthenticationError('User could not be created, try again later!');
             }
         },
         login: async (parent, { email, password }) => {
+            console.log('Server Login', email, password );
             const user = await User.findOne({ email });
 
             if (!user) {
@@ -45,8 +47,8 @@ const resolvers = {
 
             return { token, user };
         },
-        removeBook: async (_, { id }) => {
-
+        removeBook: async (_, { id }, context) => {
+            
             const result = await User.findOneAndUpdate({ _id: id })
 
             if (!result)
@@ -60,7 +62,7 @@ const resolvers = {
                 book: [book],
             }
         },
-        saveBook: async (_, { id }) => {
+        saveBook: async (_, { id }, context) => {
 
             const result = await User.findOne({ _id: id })
             console.log('save Book', result);

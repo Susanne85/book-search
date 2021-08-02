@@ -10,7 +10,7 @@ module.exports = {
     // allows token to be sent via  req.query or headers
     console.log('authMiddleware - Start', req.headers.authorization)
     let token = req.query.token || req.headers.authorization;
-
+    console.log('authMiddleware - Token', req.headers.authorization)
     // ["Bearer", "<tokenvalue>"]
     
     if (req.headers.authorization) {
@@ -18,8 +18,7 @@ module.exports = {
     }
 
     if (!token) {
-      return req;
-      //return res.status(400).json({ message: 'You have no token!' });
+      return res.status(400).json({ message: 'You have no token!' });
     }
 
     // verify token and get user data out of it
