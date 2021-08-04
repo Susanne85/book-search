@@ -29,10 +29,10 @@ const resolvers = {
                 throw new AuthenticationError('User could not be created, try again later!');
             }
         },
-        login: async (parent, { email, password }) => {
+        login: async (parent, { email, password },) => {
             console.log('Server Login', email, password );
             const user = await User.findOne({ email });
-
+            console.log('Server Login Found User', user );
             if (!user) {
                 throw new AuthenticationError('No user found with this email address');
             }
@@ -44,7 +44,8 @@ const resolvers = {
             }
 
             const token = signToken(user);
-
+            console.log('Server Login Token', token );
+            console.log('Server Login User', user );
             return { token, user };
         },
         removeBook: async (_, { id }, context) => {
