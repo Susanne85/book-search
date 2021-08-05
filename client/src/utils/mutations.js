@@ -24,13 +24,23 @@ mutation login($email:String!,$password:String!){
 }
  `;
 
-// export const SAVE_BOOK = gql`
-// mutation SaveBookMutation($saveBookId: ID!, $saveBookInput: BookInput) {
-//     saveBook(_id: $saveBookId, input: $saveBookInput) {
-//       _id
-//     }
-//   }
-//   `;
+ export const SAVE_BOOK = gql`
+ mutation saveBook($bookData: BookInput!) {
+  saveBook(bookData: $bookData) {
+      _id
+      username
+      email
+      savedBooks {
+        bookId
+        authors 
+        image
+        description
+        title
+        link
+      }
+     }
+   }
+   `;
 
 // export const REMOVE_BOOK = gql`
 //   mutation DeleteBookMutation($deleteBookBookId: String!) {
