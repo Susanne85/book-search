@@ -28,13 +28,13 @@ type Author {
     name:String!
 }
 
-input AuthorsInput {
+input AuthorInput {
     name:String!
 }
 
 input BookInput{
     bookId:String!
-    authorsInput:[AuthorsInput]!
+    authors:[AuthorInput]!
     title:String!
     description:String!
     image:String
@@ -48,7 +48,7 @@ type Query{
 type Mutation{
     login(email:String!, password:String! ):Auth
     addUser(username:String!, email:String!, password:String!):Auth
-    saveBook(bookData:BookInput):User!
+    saveBook(bookData:BookInput!):User!
     removeBook(bookId:String!):User!
 } 
 
