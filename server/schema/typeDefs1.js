@@ -34,7 +34,7 @@ input AuthorInput {
 
 input BookInput{
     bookId:String!
-    authors:[String!]
+    authors:[AuthorInput]!
     title:String!
     description:String!
     image:String
