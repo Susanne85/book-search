@@ -32,7 +32,9 @@ mutation login($email:String!,$password:String!){
       email
       savedBooks {
         bookId
-        authors 
+        authors {
+          name
+        }
         image
         description
         title

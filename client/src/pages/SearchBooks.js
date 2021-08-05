@@ -7,6 +7,7 @@ import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 //* Use the Apollo `useMutation()` Hook to execute the `SAVE_BOOK` mutation in the `handleSaveBook()` function instead of the `saveBook()` function imported from the `API` file.//
 import { SAVE_BOOK } from '../utils/mutations';
+ 
 const SearchBooks = () => {
   // create state for holding returned google api data
   const [searchedBooks, setSearchedBooks] = useState([]);
@@ -22,7 +23,7 @@ const SearchBooks = () => {
     return () => saveBookIds(savedBookIds);
   });
 
-  const [saveBook, { error, data }] = useMutation(SAVE_BOOK);
+  const [saveBook] = useMutation(SAVE_BOOK);
 
   // create method to search for books and set state on form submit
   const handleFormSubmit = async (event) => {
@@ -60,19 +61,21 @@ const SearchBooks = () => {
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-    console.log('handleSaveBook', bookToSave);
+    console.log('HandleSaveBook - book to', bookToSave);
+    
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-    console.log('in save Books', token)
+    console.log ('token is ', token);
     if (!token) {
+      console.log('no token');
       return false;
     }
    
     try {
       //const response = await saveBook(bookToSave, token);
       const {data} = await saveBook({
-        variables: bookToSave})
-      console.log ('SearchBooks ', data)
+        variables: {bookData: bookToSave},})
+      console.log ('HandleSaveBook - data ', data)
      //if (!response.ok) {
      //   throw new Error('something went wrong!');
      // }
