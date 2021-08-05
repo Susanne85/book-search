@@ -13,7 +13,7 @@ const expressApp = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context:authMiddleware
+  context: authMiddleware
 });
 
 server.applyMiddleware({ app:expressApp });
@@ -26,6 +26,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 expressApp.use(routes);
+
+expressApp.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
 db.once('open', () => {
   expressApp.listen(PORT, () => {

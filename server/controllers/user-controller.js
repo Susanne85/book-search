@@ -46,6 +46,7 @@ module.exports = {
   // user comes from `req.user` created in the auth middleware function
   async saveBook({ user, body }, res) {
     console.log('User-controller user ', user);
+    console.log('User-controller body ', body);
     try {
       const updatedUser = await User.findOneAndUpdate(
         { _id: user._id },

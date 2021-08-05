@@ -48,37 +48,37 @@ const resolvers = {
             console.log('Server Login User', user );
             return { token, user };
         },
-        removeBook: async (_, { id }, context) => {
+        // removeBook: async (_, { id }, context) => {
             
-            const result = await User.findOneAndUpdate({ _id: id })
+        //     const result = await User.findOneAndUpdate({ _id: id })
 
-            if (!result)
-                return {
-                    success: false,
-                    message: 'failed to delete book',
-                };
-            return {
-                success: true,
-                message: 'book deleted',
-                book: [book],
-            }
-        },
-        saveBook: async (_, { id }, context) => {
+        //     if (!result)
+        //         return {
+        //             success: false,
+        //             message: 'failed to delete book',
+        //         };
+        //     return {
+        //         success: true,
+        //         message: 'book deleted',
+        //         book: [book],
+        //     }
+        // },
+         saveBook: async (_, { bookData }, context) => {
 
-            const result = await User.findOne({ _id: id })
-            console.log('save Book', result);
+           //  const result = await User.findOne({ _id: id })
+             console.log('save Book', bookData);
 
-            if (!result)
-                return {
-                    success: false,
-                    message: 'failed to delete book',
-                };
-            return {
-                success: true,
-                message: 'book deleted',
-                book: [book],
-            };
-        }
+            //  if (!result)
+            //      return {
+            //          success: false,
+            //          message: 'failed to delete book',
+            //      };
+            //  return {
+            //      success: true,
+            //      message: 'book deleted',
+            //      book: [book],
+            //  };
+         }
 
     }
 }
