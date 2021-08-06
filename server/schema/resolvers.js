@@ -1,12 +1,14 @@
 const { AuthenticationError } = require('apollo-server-express');
 const { User } = require('../models');
+const bookSchema = require('../models/Book');
 
 // import sign token function from auth
 const { signToken } = require('../utils/auth');
 
 const resolvers = {
     Query: {
-        me: async (parent, context) => {
+        me: async (parent, args, context) => {
+            console.log('Server Query', context.user)
             if (context.user) {
                 return User.findOne({ _id: context.user._id })
             }
@@ -30,9 +32,9 @@ const resolvers = {
             }
         },
         login: async (parent, { email, password },) => {
-            console.log('Server Login', email, password );
+            console.log('Server Login', email, password);
             const user = await User.findOne({ email });
-            console.log('Server Login Found User', user );
+            console.log('Server Login Found User', user);
             if (!user) {
                 throw new AuthenticationError('No user found with this email address');
             }
@@ -44,12 +46,12 @@ const resolvers = {
             }
 
             const token = signToken(user);
-            console.log('Server Login Token', token );
-            console.log('Server Login User', user );
+            console.log('Server Login Token', token);
+            console.log('Server Login User', user);
             return { token, user };
         },
         // removeBook: async (_, { id }, context) => {
-            
+
         //     const result = await User.findOneAndUpdate({ _id: id })
 
         //     if (!result)
@@ -63,23 +65,26 @@ const resolvers = {
         //         book: [book],
         //     }
         // },
-         saveBook: async (_, { bookData }, context) => {
-
-           //  const result = await User.findOne({ _id: id })
-             console.log('save Book', bookData);
-
-            //  if (!result)
-            //      return {
-            //          success: false,
-            //          message: 'failed to delete book',
-            //      };
-            //  return {
-            //      success: true,
-            //      message: 'book deleted',
-            //      book: [book],
-            //  };
-         }
-
+        saveBook: async (_, { bookData }, context) => {
+            //  const result = await User.findOne({ _id: id })
+            if (context.user) {
+                console.log('Server Book', bookData);
+                const updatedUser = 
+                await User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $push: { savedBooks: bookData },
+                },
+                {
+                    new: true,
+                    runValidators: true,
+                  }
+                );
+                     
+                console.log('Server save User', updatedUser);
+                return updatedUser;
+            }
+            throw new AuthenticationError('You need to be logged in!');
+        }
     }
 }
 module.exports = resolvers;
