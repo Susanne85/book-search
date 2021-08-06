@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
 import Auth from '../utils/auth';
-//import { saveBook, searchGoogleBooks } from '../utils/API';
 import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
-//* Use the Apollo `useMutation()` Hook to execute the `SAVE_BOOK` mutation in the `handleSaveBook()` function instead of the `saveBook()` function imported from the `API` file.//
 import { SAVE_BOOK } from '../utils/mutations';
  
 const SearchBooks = () => {
@@ -49,7 +47,7 @@ const SearchBooks = () => {
         description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
       }));
-
+       
       setSearchedBooks(bookData);
       setSearchInput('');
     } catch (err) {
@@ -61,26 +59,21 @@ const SearchBooks = () => {
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-    console.log('HandleSaveBook - book to', bookToSave);
     
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-    console.log ('token is ', token);
     if (!token) {
-      console.log('no token');
       return false;
     }
    
     try {
-      //const response = await saveBook(bookToSave, token);
       const {data} = await saveBook({
-        variables: {bookData: bookToSave},})
-      console.log ('HandleSaveBook - data ', data)
-     //if (!response.ok) {
-     //   throw new Error('something went wrong!');
-     // }
-
-      // if book successfully saves to user's account, save book id to state
+        variables: {bookData: {
+          ...bookToSave, 
+          // server needs desc in the payload, fallback to NA
+          // it is not happy with empty string get error that path is required
+          description: bookToSave.description || 'NA'
+        }}})
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
       console.error(err);

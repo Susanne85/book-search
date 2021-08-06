@@ -30,11 +30,10 @@ mutation login($email:String!,$password:String!){
       _id
       username
       email
+      bookCount
       savedBooks {
         bookId
-        authors {
-          name
-        }
+        authors 
         image
         description
         title
@@ -44,10 +43,4 @@ mutation login($email:String!,$password:String!){
    }
    `;
 
-// export const REMOVE_BOOK = gql`
-//   mutation DeleteBookMutation($deleteBookBookId: String!) {
-//     deleteBook(bookId: $deleteBookBookId) {
-//       _id
-//     }
-//   }
-//   `;
+
