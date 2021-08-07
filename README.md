@@ -43,7 +43,7 @@ npm start
 
 ## Assets
 
-Live demo of the application hosted on Heroku: [Book Search](https://susannes-portfolio.herokuapp.com/)
+Live demo of the application hosted on Heroku: [Book Search](https://radiant-woodland-13835.herokuapp.com/)
 
 The following images shows the functionality of the application: 
  
